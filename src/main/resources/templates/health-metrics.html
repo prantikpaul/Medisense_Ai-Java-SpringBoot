@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Metrics</title>
+</head>
+<body>
+    <h1>Health Metrics</h1>
+    <a href="/health-metrics/add">Add New Metric</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="metric : ${metrics}">
+                <td th:text="${#temporals.format(metric.recordedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${metric.metricType}"></td>
+                <td th:text="${metric.value}"></td>
+                <td>
+                    <a th:href="@{'/health-metrics/edit/' + ${metric.id}}">Edit</a>
+                    <form th:action="@{'/health-metrics/delete/' + ${metric.id}}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/health-metrics/history">View History</a>
+</body>
+</html> 

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Health Metric</title>
+</head>
+<body>
+    <h1>Add Health Metric</h1>
+    <form th:action="@{/health-metrics/add}" th:object="${healthMetric}" method="post">
+        <label>Type:</label>
+        <input type="text" th:field="*{metricType}" required/><br/>
+        <label>Value:</label>
+        <input type="text" th:field="*{value}" required/><br/>
+        <button type="submit">Add</button>
+    </form>
+    <a href="/health-metrics">Back to List</a>
+</body>
+</html> 

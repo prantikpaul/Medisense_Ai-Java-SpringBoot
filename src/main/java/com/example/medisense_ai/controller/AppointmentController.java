@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -24,6 +25,13 @@ public class AppointmentController {
 
     private final UserService userService;
     private final AppointmentService appointmentService;
+
+    private static final List<String> DEMO_DOCTORS = Arrays.asList(
+        "Dr. Alice Smith (Cardiologist)",
+        "Dr. Bob Johnson (General Practitioner)",
+        "Dr. Carol Lee (Dermatologist)",
+        "Dr. David Kim (Pediatrician)"
+    );
 
     @Autowired
     public AppointmentController(UserService userService, AppointmentService appointmentService) {
@@ -50,6 +58,7 @@ public class AppointmentController {
         
         model.addAttribute("user", user);
         model.addAttribute("appointment", new Appointment());
+        model.addAttribute("doctors", DEMO_DOCTORS);
         return "appointments-add";
     }
 
@@ -59,7 +68,7 @@ public class AppointmentController {
         User user = userService.findByUsername(auth.getName()).orElseThrow(() -> new RuntimeException("User not found"));
         
         appointment.setUser(user);
-        appointment.setStatus("SCHEDULED"); // Default status for new appointments
+        appointment.setStatus(Appointment.AppointmentStatus.SCHEDULED); // Default status for new appointments
         
         try {
             appointmentService.saveAppointment(appointment);
@@ -94,7 +103,7 @@ public class AppointmentController {
         
         List<Appointment> appointments;
         if (status != null && !status.isEmpty()) {
-            appointments = appointmentService.findAppointmentsByStatus(user, status);
+            appointments = appointmentService.findAppointmentsByStatus(user, Appointment.AppointmentStatus.valueOf(status));
         } else {
             appointments = appointmentService.findAppointmentsByDateRange(user, startDateTime, endDateTime);
         }
@@ -122,6 +131,7 @@ public class AppointmentController {
         
         model.addAttribute("user", user);
         model.addAttribute("appointment", appointment);
+        model.addAttribute("doctors", DEMO_DOCTORS);
         return "appointments-edit";
     }
 
@@ -167,7 +177,7 @@ public class AppointmentController {
         }
         
         try {
-            appointmentService.updateAppointmentStatus(id, "CANCELLED");
+            appointmentService.updateAppointmentStatus(id, Appointment.AppointmentStatus.CANCELLED);
             redirectAttributes.addFlashAttribute("success", "Appointment cancelled successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to cancel appointment: " + e.getMessage());

@@ -37,5 +37,29 @@ public class User {
     @Column(nullable = false)
     private String gender;
 
+    @Column(nullable = false)
+    private boolean emailNotifications;
+
+    @Column(nullable = false)
+    private boolean smsNotifications;
+
+    @Column(nullable = false)
+    private boolean appointmentReminders;
+
+    @Column(nullable = false)
+    private boolean medicationReminders;
+
+    @Column(nullable = false)
+    private boolean healthTips;
+
+    @Column(nullable = false)
+    private boolean shareHealthData;
+
+    @Column(nullable = false)
+    private boolean shareActivityData;
+
+    @Column(nullable = false)
+    private boolean allowDataAnalysis;
+
     // Additional health-related fields can be added here
 }

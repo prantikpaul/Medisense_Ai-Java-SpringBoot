@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointments</title>
+</head>
+<body>
+    <h1>Appointments</h1>
+    <a href="/appointments/add">Add New Appointment</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="appt : ${appointments}">
+                <td th:text="${appt.doctor}"></td>
+                <td th:text="${appt.date}"></td>
+                <td th:text="${appt.time}"></td>
+                <td th:text="${appt.status}"></td>
+                <td>
+                    <a th:href="@{'/appointments/edit/' + ${appt.id}}">Edit</a>
+                    <form th:action="@{'/appointments/delete/' + ${appt.id}}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/appointments/history">View History</a>
+</body>
+</html> 

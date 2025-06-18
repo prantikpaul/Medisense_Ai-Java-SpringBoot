@@ -14,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/profile")
@@ -51,14 +54,17 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    public String updateProfile(@ModelAttribute UserProfile profile, 
-                               @RequestParam("profileImage") MultipartFile profileImage,
+    public String updateProfile(@ModelAttribute UserProfile profile,
+                               @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+                               @RequestParam(value = "allergies", required = false) String allergies,
+                               @RequestParam(value = "medications", required = false) String medications,
+                               @RequestParam(value = "medicalConditions", required = false) String medicalConditions,
+                               @RequestParam(value = "foodPreferences", required = false) String foodPreferences,
+                               @RequestParam(value = "foodDislikes", required = false) String foodDislikes,
                                RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName()).orElseThrow(() -> new RuntimeException("User not found"));
-        
         UserProfile existingProfile = userProfileService.getOrCreateProfile(user);
-        
         // Update profile fields
         existingProfile.setPhoneNumber(profile.getPhoneNumber());
         existingProfile.setDateOfBirth(profile.getDateOfBirth());
@@ -67,20 +73,19 @@ public class ProfileController {
         existingProfile.setEmergencyContactName(profile.getEmergencyContactName());
         existingProfile.setEmergencyContactPhone(profile.getEmergencyContactPhone());
         existingProfile.setEmergencyContactRelationship(profile.getEmergencyContactRelationship());
-        existingProfile.setAllergies(profile.getAllergies());
-        existingProfile.setMedications(profile.getMedications());
-        existingProfile.setMedicalConditions(profile.getMedicalConditions());
-        existingProfile.setFoodPreferences(profile.getFoodPreferences());
-        existingProfile.setFoodDislikes(profile.getFoodDislikes());
         existingProfile.setFitnessGoals(profile.getFitnessGoals());
         existingProfile.setDietaryPreferences(profile.getDietaryPreferences());
-        
+        // Convert comma-separated strings to lists
+        existingProfile.setAllergies(stringToList(allergies));
+        existingProfile.setMedications(stringToList(medications));
+        existingProfile.setMedicalConditions(stringToList(medicalConditions));
+        existingProfile.setFoodPreferences(stringToList(foodPreferences));
+        existingProfile.setFoodDislikes(stringToList(foodDislikes));
         try {
             // Update profile picture if provided
-            if (!profileImage.isEmpty()) {
+            if (profileImage != null && !profileImage.isEmpty()) {
                 userProfileService.updateProfilePicture(user, profileImage);
             }
-            
             userProfileService.saveUserProfile(existingProfile);
             redirectAttributes.addFlashAttribute("success", "Profile updated successfully");
         } catch (IOException e) {
@@ -88,7 +93,11 @@ public class ProfileController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to update profile: " + e.getMessage());
         }
-        
         return "redirect:/profile";
+    }
+
+    private List<String> stringToList(String str) {
+        if (str == null || str.trim().isEmpty()) return Collections.emptyList();
+        return Arrays.asList(str.split("\s*,\s*"));
     }
 }

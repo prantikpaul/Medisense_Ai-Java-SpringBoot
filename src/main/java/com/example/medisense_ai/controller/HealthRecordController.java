@@ -63,11 +63,11 @@ public class HealthRecordController {
         User user = userService.findByUsername(auth.getName()).orElseThrow(() -> new RuntimeException("User not found"));
         
         healthRecord.setUser(user);
-        healthRecord.setUploadDate(LocalDateTime.now());
+        healthRecord.setUploadedAt(LocalDateTime.now());
         
         try {
             if (!file.isEmpty()) {
-                healthRecordService.saveHealthRecordWithFile(healthRecord, file);
+                healthRecordService.saveHealthRecord(healthRecord, file);
             } else {
                 healthRecordService.saveHealthRecord(healthRecord);
             }
@@ -106,11 +106,11 @@ public class HealthRecordController {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
         
         if (keyword != null && !keyword.isEmpty()) {
-            records = healthRecordService.searchRecordsByKeyword(user, keyword);
+            records = healthRecordService.searchRecords(user, keyword);
         } else if (recordType != null && !recordType.isEmpty()) {
             records = healthRecordService.findRecordsByType(user, recordType);
         } else {
-            records = healthRecordService.findRecordsByDateRange(user, startDateTime, endDateTime);
+            records = healthRecordService.findRecordsByDateRange(user, startDate, endDate);
         }
         
         model.addAttribute("user", user);
@@ -177,12 +177,12 @@ public class HealthRecordController {
         // Update fields but preserve user and upload date
         healthRecord.setId(existingRecord.getId());
         healthRecord.setUser(existingRecord.getUser());
-        healthRecord.setUploadDate(existingRecord.getUploadDate());
-        healthRecord.setFilePath(existingRecord.getFilePath()); // Preserve existing file path unless new file uploaded
+        healthRecord.setUploadedAt(existingRecord.getUploadedAt());
+        healthRecord.setDocumentPath(existingRecord.getDocumentPath()); // Preserve existing file path unless new file uploaded
         
         try {
             if (!file.isEmpty()) {
-                healthRecordService.saveHealthRecordWithFile(healthRecord, file);
+                healthRecordService.saveHealthRecord(healthRecord, file);
             } else {
                 healthRecordService.saveHealthRecord(healthRecord);
             }

@@ -40,7 +40,7 @@ public class MealPlanController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName()).orElseThrow(() -> new RuntimeException("User not found"));
         
-        List<MealPlan> recentMealPlans = mealPlanService.findMealPlansByUser(user);
+        List<MealPlan> recentMealPlans = mealPlanService.findAllByUser(user);
         
         model.addAttribute("user", user);
         model.addAttribute("mealPlans", recentMealPlans);
@@ -55,7 +55,7 @@ public class MealPlanController {
         
         // Get today's meal plan or create a new one if it doesn't exist
         LocalDate today = LocalDate.now();
-        MealPlan todaysMealPlan = mealPlanService.findMealPlanByUserAndDate(user, today)
+        MealPlan todaysMealPlan = mealPlanService.findMealPlanByDate(user, today)
                 .orElse(new MealPlan());
         
         if (todaysMealPlan.getId() == null) {

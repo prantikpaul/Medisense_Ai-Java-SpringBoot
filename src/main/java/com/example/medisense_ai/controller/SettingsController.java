@@ -201,7 +201,7 @@ public class SettingsController {
         
         try {
             // Delete user profile first (this will handle associated files)
-            userProfileService.deleteUserProfile(user);
+            userProfileService.deleteUserProfile(user.getId());
             
             // Delete user account
             userService.deleteUser(user.getId());

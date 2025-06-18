@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Appointment</title>
+</head>
+<body>
+    <h1>Add Appointment</h1>
+    <form th:action="@{/appointments/add}" th:object="${appointment}" method="post">
+        <label>Doctor:</label>
+        <select th:field="*{doctor}" required>
+            <option th:each="doc : ${doctors}" th:value="${doc}" th:text="${doc}"></option>
+        </select><br/>
+        <label>Date:</label>
+        <input type="date" th:field="*{date}" required/><br/>
+        <label>Time:</label>
+        <input type="time" th:field="*{time}" required/><br/>
+        <label>Notes:</label>
+        <textarea th:field="*{notes}"></textarea><br/>
+        <button type="submit">Add</button>
+    </form>
+    <a href="/appointments">Back to List</a>
+</body>
+</html> 

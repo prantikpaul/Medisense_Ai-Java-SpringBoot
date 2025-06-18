@@ -86,6 +86,30 @@ public class UserProfile {
     @Column
     private LocalDateTime updatedAt;
 
+    @Column
+    private boolean emailNotifications;
+
+    @Column
+    private boolean smsNotifications;
+
+    @Column
+    private boolean appointmentReminders;
+
+    @Column
+    private boolean medicationReminders;
+
+    @Column
+    private boolean healthTips;
+
+    @Column
+    private boolean shareHealthData;
+
+    @Column
+    private boolean shareActivityData;
+
+    @Column
+    private boolean allowDataAnalysis;
+
     // Pre-persist hook
     @PrePersist
     public void prePersist() {

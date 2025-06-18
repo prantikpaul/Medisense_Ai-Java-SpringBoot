@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Metrics History</title>
+</head>
+<body>
+    <h1>Health Metrics History</h1>
+    <form th:action="@{/health-metrics/history}" method="get">
+        <label>Start Date:</label>
+        <input type="date" name="startDate" th:value="${startDate}"/>
+        <label>End Date:</label>
+        <input type="date" name="endDate" th:value="${endDate}"/>
+        <button type="submit">Filter</button>
+    </form>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="metric : ${metrics}">
+                <td th:text="${#temporals.format(metric.recordedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${metric.metricType}"></td>
+                <td th:text="${metric.value}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/health-metrics">Back to List</a>
+</body>
+</html> 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointments History</title>
+</head>
+<body>
+    <h1>Appointments History</h1>
+    <form th:action="@{/appointments/history}" method="get">
+        <label>Start Date:</label>
+        <input type="date" name="startDate" th:value="${startDate}"/>
+        <label>End Date:</label>
+        <input type="date" name="endDate" th:value="${endDate}"/>
+        <button type="submit">Filter</button>
+    </form>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="appt : ${appointments}">
+                <td th:text="${appt.doctor}"></td>
+                <td th:text="${appt.date}"></td>
+                <td th:text="${appt.time}"></td>
+                <td th:text="${appt.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/appointments">Back to List</a>
+</body>
+</html> 
