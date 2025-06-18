@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Today's Meal Plan - MediSense AI</title>
+    <style>
+        .meal-card {
+            background-color: #fff9f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .meal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .meal-calories {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .meal-description {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .nutrition-summary {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .nutrition-item {
+            display: inline-block;
+            margin-right: 24px;
+        }
+        
+        .excluded-section {
+            background-color: #fff1f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        
+        .excluded-title {
+            color: #d9534f;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .excluded-title i {
+            margin-right: 8px;
+        }
+        
+        .excluded-item {
+            margin-bottom: 8px;
+        }
+        
+        .back-button {
+            margin-bottom: 16px;
+        }
+        
+        .page-indicator {
+            width: 40px;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 2.5px;
+            margin: 0 auto;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <a th:href="@{/meal-plans}" class="btn btn-outline-primary back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2 class="mb-4">Today's Suggestions</h2>
+                
+                <!-- Nutrition Summary -->
+                <div class="nutrition-summary">
+                    <div class="nutrition-item">
+                        <span>Protein: </span>
+                        <strong th:text="${mealPlan.totalProtein != null ? mealPlan.totalProtein + 'g' : '120g'}">120g</strong>
+                    </div>
+                    <div class="nutrition-item">
+                        <span>Carbs: </span>
+                        <strong th:text="${mealPlan.totalCarbs != null ? mealPlan.totalCarbs + 'g' : '200g'}">200g</strong>
+                    </div>
+                    <div class="nutrition-item">
+                        <span>Fat: </span>
+                        <strong th:text="${mealPlan.totalFat != null ? mealPlan.totalFat + 'g' : '60g'}">60g</strong>
+                    </div>
+                </div>
+                
+                <h4 class="mb-3">
+                    <i class="fas fa-utensils mr-2"></i> Meal Plan
+                </h4>
+                
+                <!-- Breakfast -->
+                <div class="meal-card" th:if="${meals != null && !meals.isEmpty()}" 
+                     th:each="meal : ${meals}" th:if="${meal.mealType == 'BREAKFAST'}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Breakfast</h5>
+                        <span class="meal-calories" th:text="${meal.calories + ' kcal'}">320 kcal</span>
+                    </div>
+                    <p class="meal-description" th:text="${meal.description}">Oatmeal with banana and almonds</p>
+                </div>
+                
+                <!-- Default Breakfast if no meals exist -->
+                <div class="meal-card" th:if="${meals == null || meals.isEmpty() || !meals.stream().anyMatch(m -> m.mealType == 'BREAKFAST')}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Breakfast</h5>
+                        <span class="meal-calories">320 kcal</span>
+                    </div>
+                    <p class="meal-description">Oatmeal with banana and almonds</p>
+                </div>
+                
+                <!-- Lunch -->
+                <div class="meal-card" th:if="${meals != null && !meals.isEmpty()}" 
+                     th:each="meal : ${meals}" th:if="${meal.mealType == 'LUNCH'}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Lunch</h5>
+                        <span class="meal-calories" th:text="${meal.calories + ' kcal'}">520 kcal</span>
+                    </div>
+                    <p class="meal-description" th:text="${meal.description}">Grilled chicken, quinoa & mixed veggies</p>
+                </div>
+                
+                <!-- Default Lunch if no meals exist -->
+                <div class="meal-card" th:if="${meals == null || meals.isEmpty() || !meals.stream().anyMatch(m -> m.mealType == 'LUNCH')}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Lunch</h5>
+                        <span class="meal-calories">520 kcal</span>
+                    </div>
+                    <p class="meal-description">Grilled chicken, quinoa & mixed veggies</p>
+                </div>
+                
+                <!-- Snack -->
+                <div class="meal-card" th:if="${meals != null && !meals.isEmpty()}" 
+                     th:each="meal : ${meals}" th:if="${meal.mealType == 'SNACK'}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Snack</h5>
+                        <span class="meal-calories" th:text="${meal.calories + ' kcal'}">180 kcal</span>
+                    </div>
+                    <p class="meal-description" th:text="${meal.description}">Boiled eggs and apple</p>
+                </div>
+                
+                <!-- Default Snack if no meals exist -->
+                <div class="meal-card" th:if="${meals == null || meals.isEmpty() || !meals.stream().anyMatch(m -> m.mealType == 'SNACK')}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Snack</h5>
+                        <span class="meal-calories">180 kcal</span>
+                    </div>
+                    <p class="meal-description">Boiled eggs and apple</p>
+                </div>
+                
+                <!-- Dinner -->
+                <div class="meal-card" th:if="${meals != null && !meals.isEmpty()}" 
+                     th:each="meal : ${meals}" th:if="${meal.mealType == 'DINNER'}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Dinner</h5>
+                        <span class="meal-calories" th:text="${meal.calories + ' kcal'}">480 kcal</span>
+                    </div>
+                    <p class="meal-description" th:text="${meal.description}">Steamed fish, brown rice, spinach</p>
+                </div>
+                
+                <!-- Default Dinner if no meals exist -->
+                <div class="meal-card" th:if="${meals == null || meals.isEmpty() || !meals.stream().anyMatch(m -> m.mealType == 'DINNER')}">
+                    <div class="meal-header">
+                        <h5 class="meal-title">Dinner</h5>
+                        <span class="meal-calories">480 kcal</span>
+                    </div>
+                    <p class="meal-description">Steamed fish, brown rice, spinach</p>
+                </div>
+                
+                <!-- Excluded Foods -->
+                <div class="excluded-section">
+                    <h5 class="excluded-title">
+                        <i class="fas fa-ban"></i> Excluded
+                    </h5>
+                    <div class="excluded-item" th:if="${profile != null && profile.allergies != null && !profile.allergies.isEmpty()}">
+                        <strong>Allergies:</strong> <span th:text="${profile.allergies}">Peanuts, Dairy</span>
+                    </div>
+                    <div class="excluded-item" th:if="${profile != null && profile.foodDislikes != null && !profile.foodDislikes.isEmpty()}">
+                        <strong>Dislikes:</strong> <span th:text="${profile.foodDislikes}">Mushroom</span>
+                    </div>
+                    <!-- Default values if profile is empty -->
+                    <div class="excluded-item" th:if="${profile == null || profile.allergies == null || profile.allergies.isEmpty()}">
+                        <strong>Allergies:</strong> Peanuts, Dairy
+                    </div>
+                    <div class="excluded-item" th:if="${profile == null || profile.foodDislikes == null || profile.foodDislikes.isEmpty()}">
+                        <strong>Dislikes:</strong> Mushroom
+                    </div>
+                </div>
+                
+                <!-- Page Indicator -->
+                <div class="page-indicator"></div>
+                
+                <!-- Action Buttons -->
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <a th:href="@{/meal-plans/add}" class="btn btn-outline-primary btn-block">Create Custom Plan</a>
+                    </div>
+                    <div class="col-6">
+                        <a th:href="@{/meal-plans/today/generate}" class="btn btn-primary btn-block">Generate New Plan</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
